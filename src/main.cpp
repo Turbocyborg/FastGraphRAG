@@ -89,7 +89,7 @@ int main(){
     // 1. query to capture both name(@func.name) and entire definition(@func.body):
     // look inside its declarator
 
-    string query_str= "((function_definition declarator: (function_declarator declarator:(identifier) @func_name)) @func.body)";
+    string query_str= "((function_definition declarator: (function_declarator declarator:(identifier) @func.name)) @func.body)";
 
     uint32_t error_offset;
     TSQueryError error_type;
