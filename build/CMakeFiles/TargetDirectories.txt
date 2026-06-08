@@ -1,0 +1,4 @@
+/run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/build/CMakeFiles/tree-sitter-cpp.dir
+/run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/build/CMakeFiles/fastgraphrag.dir
+/run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/build/CMakeFiles/edit_cache.dir
+/run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/build/CMakeFiles/rebuild_cache.dir
