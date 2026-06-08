@@ -50,12 +50,13 @@ struct QueryCursorDeleter{
 using ParserPtr = unique_ptr<TSParser, ParserDeleter>;
 using TreePtr = unique_ptr<TSTree, TreeDeleter>;
 using QueryPtr = unique_ptr<TSQuery, QueryDeleter>;
-
-using CStringPtr = unique_ptr<char,decltype(&free)>;
 using QueryCursorPtr= unique_ptr<TSQueryCursor,QueryCursorDeleter>;
 
+using CStringPtr = unique_ptr<char,decltype(&free)>;
+
+
 int main(){
-    cout<<"Starting fastgraphrag AST Parser..."<<endl;
+    cout<<"Starting fastgraphrag File Parser..."<<endl;
 
     //1. create new parser instance
     ParserPtr parser(ts_parser_new());
@@ -63,10 +64,10 @@ int main(){
     //2. tell the parser to use c++ grammar rules
     ts_parser_set_language(parser.get(), tree_sitter_cpp());
 
-    //3. dummy code
-    string src_code="int add(int a,int b){return a+b;}\n"
-                    "void print_hello(){cout<<\"Hello\";}";
-    cout<<"Analyzing:\n"<<src_code<<'\n'<<endl;
+    //3. actual file from test repo
+    string filepath="../test_repo/math_ops.cpp";
+    string src_code=read_file(filepath);
+    cout<<"Successfully loaded: "<< filepath << " ("<< src_code.length()<<"bytes)\n"<<endl;
 
     //4. parse the string into an AST(Abstract Syntax Tree)
     TreePtr tree(
@@ -85,11 +86,10 @@ int main(){
     //Extracting data using queries
     //=====
 
-    // 1. query to find a function definition:
-    // look inside its declarator, find the identifier (the name),
-    // and tag it as @func_name
+    // 1. query to capture both name(@func.name) and entire definition(@func.body):
+    // look inside its declarator
 
-    string query_str= "(function_definition declarator: (function_declarator declarator:(identifier) @func_name))";
+    string query_str= "((function_definition declarator: (function_declarator declarator:(identifier) @func_name)) @func.body)";
 
     uint32_t error_offset;
     TSQueryError error_type;
@@ -126,10 +126,14 @@ int main(){
     );
 
     TSQueryMatch match;
-    cout<<"=== Extracted Functions ==="<<endl;
+    cout<<"=== RAG Chunks Extracted ===\n"<<endl;
 
     // 4. loop through all the matches found in code
     while(ts_query_cursor_next_match(query_cursor.get(), &match)){
+        string curr_func_name="";
+        string curr_func_body="";
+
+        //loop through the captures in this match
         for(uint32_t i=0;i<match.capture_count;i++){
             TSNode capture_node = match.captures[i].node;
 
@@ -137,10 +141,23 @@ int main(){
             uint32_t start_byte=ts_node_start_byte(capture_node);
             uint32_t end_byte=ts_node_end_byte(capture_node);
 
-            string func_name=src_code.substr(start_byte,end_byte-start_byte);
+            //extracted text
+            string extracted_txt=src_code.substr(start_byte,end_byte-start_byte);
 
-            cout<<"Found Function: -> "<<func_name<< " <-"<<endl;
+            //get the name of capture tag(e.g., "func.name" or "func.body")
+            uint32_t length;
+            const char *capture_name = ts_query_capture_name_for_id(query.get(), match.captures[i].index, & length);
+
+            string tag(capture_name, length);
+
+            if(tag=="func.name")curr_func_name=extracted_txt;
+            if(tag=="func.body")curr_func_body=extracted_txt;
+
         }
+        //print perfect "chunk" ready for a vector database
+        cout<<"[Function Name]: "<<curr_func_name<<endl;
+        cout<<"[Code Chunk]:\n"<<curr_func_body<<'\n'<<endl;
+        cout<<"-----------------------------------"<<endl;
     }
 
     // //6. convert the tree to readable string format(S-expression)
