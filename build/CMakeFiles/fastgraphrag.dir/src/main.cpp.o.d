@@ -173,4 +173,9 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o: \
  /usr/include/c++/16.1.1/bits/atomic_lockfree_defines.h \
  /usr/include/c++/16.1.1/backward/auto_ptr.h \
  /usr/include/c++/16.1.1/pstl/glue_memory_defs.h \
- /usr/include/c++/16.1.1/pstl/execution_defs.h
+ /usr/include/c++/16.1.1/pstl/execution_defs.h \
+ /usr/include/c++/16.1.1/sstream /usr/include/c++/16.1.1/bits/sstream.tcc \
+ /usr/include/c++/16.1.1/fstream /usr/include/c++/16.1.1/bits/codecvt.h \
+ /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
+ /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/c++io.h \
+ /usr/include/c++/16.1.1/bits/fstream.tcc
