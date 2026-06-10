@@ -95,6 +95,7 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o: /run/media/turbocyborg/Volume/Best/C
   /usr/include/c++/16.1.1/bits/cpp_type_traits.h \
   /usr/include/c++/16.1.1/bits/cxxabi_forced.h \
   /usr/include/c++/16.1.1/bits/cxxabi_init_exception.h \
+  /usr/include/c++/16.1.1/bits/enable_special_members.h \
   /usr/include/c++/16.1.1/bits/erase_if.h \
   /usr/include/c++/16.1.1/bits/exception.h \
   /usr/include/c++/16.1.1/bits/exception_defines.h \
@@ -103,6 +104,8 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o: /run/media/turbocyborg/Volume/Best/C
   /usr/include/c++/16.1.1/bits/functexcept.h \
   /usr/include/c++/16.1.1/bits/functional_hash.h \
   /usr/include/c++/16.1.1/bits/hash_bytes.h \
+  /usr/include/c++/16.1.1/bits/hashtable.h \
+  /usr/include/c++/16.1.1/bits/hashtable_policy.h \
   /usr/include/c++/16.1.1/bits/invoke.h \
   /usr/include/c++/16.1.1/bits/ios_base.h \
   /usr/include/c++/16.1.1/bits/istream.tcc \
@@ -118,6 +121,7 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o: /run/media/turbocyborg/Volume/Best/C
   /usr/include/c++/16.1.1/bits/new_allocator.h \
   /usr/include/c++/16.1.1/bits/new_except.h \
   /usr/include/c++/16.1.1/bits/new_throw.h \
+  /usr/include/c++/16.1.1/bits/node_handle.h \
   /usr/include/c++/16.1.1/bits/ostream.h \
   /usr/include/c++/16.1.1/bits/ostream.tcc \
   /usr/include/c++/16.1.1/bits/ostream_insert.h \
@@ -137,23 +141,30 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o: /run/media/turbocyborg/Volume/Best/C
   /usr/include/c++/16.1.1/bits/stdexcept_throw.h \
   /usr/include/c++/16.1.1/bits/stdexcept_throwfwd.h \
   /usr/include/c++/16.1.1/bits/stl_algobase.h \
+  /usr/include/c++/16.1.1/bits/stl_bvector.h \
   /usr/include/c++/16.1.1/bits/stl_construct.h \
   /usr/include/c++/16.1.1/bits/stl_function.h \
   /usr/include/c++/16.1.1/bits/stl_iterator.h \
   /usr/include/c++/16.1.1/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/16.1.1/bits/stl_iterator_base_types.h \
+  /usr/include/c++/16.1.1/bits/stl_multiset.h \
   /usr/include/c++/16.1.1/bits/stl_pair.h \
   /usr/include/c++/16.1.1/bits/stl_raw_storage_iter.h \
+  /usr/include/c++/16.1.1/bits/stl_set.h \
   /usr/include/c++/16.1.1/bits/stl_tempbuf.h \
+  /usr/include/c++/16.1.1/bits/stl_tree.h \
   /usr/include/c++/16.1.1/bits/stl_uninitialized.h \
+  /usr/include/c++/16.1.1/bits/stl_vector.h \
   /usr/include/c++/16.1.1/bits/streambuf.tcc \
   /usr/include/c++/16.1.1/bits/streambuf_iterator.h \
   /usr/include/c++/16.1.1/bits/string_view.tcc \
   /usr/include/c++/16.1.1/bits/stringfwd.h \
   /usr/include/c++/16.1.1/bits/unique_ptr.h \
+  /usr/include/c++/16.1.1/bits/unordered_map.h \
   /usr/include/c++/16.1.1/bits/uses_allocator.h \
   /usr/include/c++/16.1.1/bits/uses_allocator_args.h \
   /usr/include/c++/16.1.1/bits/utility.h \
+  /usr/include/c++/16.1.1/bits/vector.tcc \
   /usr/include/c++/16.1.1/bits/version.h \
   /usr/include/c++/16.1.1/cctype \
   /usr/include/c++/16.1.1/cerrno \
@@ -186,6 +197,7 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o: /run/media/turbocyborg/Volume/Best/C
   /usr/include/c++/16.1.1/pstl/execution_defs.h \
   /usr/include/c++/16.1.1/pstl/glue_memory_defs.h \
   /usr/include/c++/16.1.1/pstl/pstl_config.h \
+  /usr/include/c++/16.1.1/set \
   /usr/include/c++/16.1.1/sstream \
   /usr/include/c++/16.1.1/stdexcept \
   /usr/include/c++/16.1.1/stdlib.h \
@@ -196,6 +208,8 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o: /run/media/turbocyborg/Volume/Best/C
   /usr/include/c++/16.1.1/tuple \
   /usr/include/c++/16.1.1/type_traits \
   /usr/include/c++/16.1.1/typeinfo \
+  /usr/include/c++/16.1.1/unordered_map \
+  /usr/include/c++/16.1.1/vector \
   /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
   /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
   /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
@@ -264,13 +278,19 @@ fastgraphrag: /usr/lib/Scrt1.o \
   libtree-sitter-cpp.a
 
 
-/usr/include/c++/16.1.1/bits/requires_hosted.h:
+/usr/lib/libm.so.6:
 
-/usr/include/bits/types/struct_timespec.h:
+/usr/lib/ld-linux-x86-64.so.2:
 
-/usr/include/c++/16.1.1/bits/align.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/libgcc.a:
 
-/usr/include/c++/16.1.1/bits/range_access.h:
+/usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/crtbeginS.o:
+
+/usr/lib/libtree-sitter.so:
+
+/usr/lib/libgcc_s.so.1:
+
+/usr/lib/libgcc_s.so:
 
 /usr/include/c++/16.1.1/bits/predefined_ops.h:
 
@@ -280,6 +300,10 @@ fastgraphrag: /usr/lib/Scrt1.o \
 
 /usr/include/c++/16.1.1/bits/new_allocator.h:
 
+/usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/crtendS.o:
+
+/usr/include/c++/16.1.1/bits/memory_resource.h:
+
 /usr/include/c++/16.1.1/bits/basic_string.tcc:
 
 /usr/include/c++/16.1.1/bits/localefwd.h:
@@ -288,25 +312,35 @@ fastgraphrag: /usr/lib/Scrt1.o \
 
 /usr/include/c++/16.1.1/bits/locale_facets.h:
 
+/usr/lib/libm.so:
+
+/usr/include/c++/16.1.1/bits/ostream_print.h:
+
+/usr/include/c++/16.1.1/bits/locale_classes.tcc:
+
 /usr/include/bits/types/clock_t.h:
 
 /usr/include/bits/types/__fpos_t.h:
+
+/usr/include/c++/16.1.1/bits/ios_base.h:
 
 /usr/include/c++/16.1.1/bits/istream.tcc:
 
 /usr/include/bits/struct_mutex.h:
 
-/usr/lib/libtree-sitter.so:
-
-/usr/include/c++/16.1.1/bits/ios_base.h:
-
-/usr/include/bits/types/struct_sched_param.h:
+/usr/include/c++/16.1.1/bits/hashtable_policy.h:
 
 /usr/include/c++/16.1.1/bits/hash_bytes.h:
 
 /usr/include/c++/16.1.1/bits/exception.h:
 
+/usr/include/c++/16.1.1/bits/enable_special_members.h:
+
 /usr/include/c++/16.1.1/bits/concept_check.h:
+
+/usr/lib/libc_nonshared.a:
+
+/usr/include/c++/16.1.1/istream:
 
 /usr/include/c++/16.1.1/bits/basic_string.h:
 
@@ -360,6 +394,16 @@ fastgraphrag: /usr/lib/Scrt1.o \
 
 /usr/include/bits/types/struct_tm.h:
 
+/usr/include/bits/types/struct_timespec.h:
+
+/usr/include/c++/16.1.1/bits/align.h:
+
+/usr/include/c++/16.1.1/bits/requires_hosted.h:
+
+/usr/include/c++/16.1.1/unordered_map:
+
+/usr/include/bits/types/struct_sched_param.h:
+
 /usr/lib/libmvec.so.1:
 
 /usr/include/c++/16.1.1/bits/allocated_ptr.h:
@@ -408,13 +452,19 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o:
 
 /usr/include/c++/16.1.1/bits/atomic_lockfree_defines.h:
 
+/usr/include/c++/16.1.1/bits/unordered_map.h:
+
 /usr/include/bits/long-double.h:
 
 /usr/include/c++/16.1.1/ext/numeric_traits.h:
 
+/usr/include/c++/16.1.1/bits/stl_multiset.h:
+
 /usr/include/bits/typesizes.h:
 
 /usr/include/c++/16.1.1/bits/shared_ptr_atomic.h:
+
+/usr/include/c++/16.1.1/bits/stl_bvector.h:
 
 /usr/lib/crti.o:
 
@@ -456,9 +506,13 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o:
 
 /usr/include/c++/16.1.1/memory:
 
-/usr/include/alloca.h:
+/usr/lib/libc.so:
 
-/usr/include/bits/stdint-least.h:
+/usr/include/bits/pthreadtypes.h:
+
+/usr/include/c++/16.1.1/vector:
+
+/usr/include/c++/16.1.1/bits/node_handle.h:
 
 /usr/include/c++/16.1.1/bits/exception_ptr.h:
 
@@ -482,6 +536,8 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o:
 
 /usr/include/bits/stdio_lim.h:
 
+/usr/include/c++/16.1.1/bits/hashtable.h:
+
 /usr/include/bits/types/__mbstate_t.h:
 
 /usr/include/asm/posix_types_64.h:
@@ -494,25 +550,23 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o:
 
 /usr/include/c++/16.1.1/ext/type_traits.h:
 
-/usr/include/bits/types/__FILE.h:
-
-/usr/include/features.h:
-
-/usr/include/bits/sched.h:
-
 /usr/include/c++/16.1.1/bits/atomic_base.h:
 
 /usr/include/bits/types/cookie_io_functions_t.h:
+
+/usr/lib/libatomic_asneeded.so:
+
+/usr/include/bits/types/struct_timeval.h:
 
 /usr/include/bits/types/sigset_t.h:
 
 /usr/include/c++/16.1.1/bits/char_traits.h:
 
-/usr/include/c++/16.1.1/istream:
-
-/usr/lib/libc_nonshared.a:
-
 /usr/include/bits/types/time_t.h:
+
+/usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/gthr-default.h:
+
+/usr/include/bits/thread-shared-types.h:
 
 /usr/include/c++/16.1.1/bits/fstream.tcc:
 
@@ -527,6 +581,10 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o:
 /usr/include/c++/16.1.1/pstl/glue_memory_defs.h:
 
 /usr/include/bits/endian.h:
+
+/usr/include/sys/single_threaded.h:
+
+/usr/include/c++/16.1.1/bits/stdexcept_throw.h:
 
 /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/src/main.cpp:
 
@@ -549,6 +607,14 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o:
 /usr/include/linux/posix_types.h:
 
 /usr/include/bits/types/FILE.h:
+
+/usr/include/features.h:
+
+/usr/include/bits/sched.h:
+
+/usr/include/bits/types/__FILE.h:
+
+/usr/include/c++/16.1.1/bits/range_access.h:
 
 /usr/include/bits/types/__locale_t.h:
 
@@ -574,6 +640,10 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o:
 
 /usr/include/c++/16.1.1/bits/string_view.tcc:
 
+/usr/include/alloca.h:
+
+/usr/include/c++/16.1.1/set:
+
 /usr/include/sys/select.h:
 
 /usr/include/c++/16.1.1/bits/stl_construct.h:
@@ -592,10 +662,6 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o:
 
 /usr/include/c++/16.1.1/cstdlib:
 
-/usr/include/c++/16.1.1/bits/memory_resource.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/crtendS.o:
-
 /usr/include/c++/16.1.1/bits/stl_pair.h:
 
 /usr/include/c++/16.1.1/bits/stl_raw_storage_iter.h:
@@ -606,11 +672,19 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o:
 
 /usr/include/c++/16.1.1/iosfwd:
 
+/usr/include/bits/stdint-least.h:
+
+/usr/include/c++/16.1.1/bits/stl_set.h:
+
 /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/basic_file.h:
 
 /usr/include/c++/16.1.1/bits/stl_tempbuf.h:
 
+/usr/include/c++/16.1.1/ios:
+
 /usr/include/c++/16.1.1/bits/stl_uninitialized.h:
+
+/usr/include/c++/16.1.1/bits/stl_vector.h:
 
 /usr/include/c++/16.1.1/bits/streambuf.tcc:
 
@@ -624,7 +698,17 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o:
 
 /usr/include/stdlib.h:
 
+/usr/include/c++/16.1.1/bits/vector.tcc:
+
+/usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/ctype_base.h:
+
 /usr/include/c++/16.1.1/clocale:
+
+/usr/lib/libc.so.6:
+
+/usr/include/c++/16.1.1/bits/stl_iterator_base_types.h:
+
+/usr/include/c++/16.1.1/cstdio:
 
 /usr/include/c++/16.1.1/cwchar:
 
@@ -653,8 +737,6 @@ libtree-sitter-cpp.a:
 /usr/include/c++/16.1.1/ext/atomicity.h:
 
 /usr/include/c++/16.1.1/fstream:
-
-/usr/include/c++/16.1.1/ios:
 
 /usr/include/c++/16.1.1/bits/stl_algobase.h:
 
@@ -692,33 +774,15 @@ libtree-sitter-cpp.a:
 
 /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/c++locale.h:
 
-/usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/ctype_base.h:
-
 /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/ctype_inline.h:
-
-/usr/include/bits/pthreadtypes.h:
-
-/usr/lib/libc.so:
 
 /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/error_constants.h:
 
 /usr/include/time.h:
 
-/usr/include/bits/thread-shared-types.h:
-
-/usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/gthr-default.h:
-
-/usr/include/c++/16.1.1/bits/stl_iterator_base_types.h:
-
-/usr/include/c++/16.1.1/cstdio:
-
-/usr/lib/libc.so.6:
-
 /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/os_defines.h:
 
 /usr/include/errno.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/libgcc.a:
 
 /usr/include/features-time64.h:
 
@@ -746,10 +810,6 @@ libtree-sitter-cpp.a:
 
 /usr/include/sys/cdefs.h:
 
-/usr/include/c++/16.1.1/bits/stdexcept_throw.h:
-
-/usr/include/sys/single_threaded.h:
-
 /usr/include/wchar.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/stdint.h:
@@ -762,24 +822,6 @@ libtree-sitter-cpp.a:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/stddef.h:
 
+/usr/include/c++/16.1.1/bits/stl_tree.h:
+
 /usr/lib/crtn.o:
-
-/usr/include/bits/types/struct_timeval.h:
-
-/usr/lib/libatomic_asneeded.so:
-
-/usr/lib/libgcc_s.so:
-
-/usr/lib/libgcc_s.so.1:
-
-/usr/include/c++/16.1.1/bits/ostream_print.h:
-
-/usr/include/c++/16.1.1/bits/locale_classes.tcc:
-
-/usr/lib/libm.so:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/crtbeginS.o:
-
-/usr/lib/ld-linux-x86-64.so.2:
-
-/usr/lib/libm.so.6:
