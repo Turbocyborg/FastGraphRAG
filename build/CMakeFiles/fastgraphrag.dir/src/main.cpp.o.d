@@ -191,6 +191,22 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o: \
  /usr/include/c++/16.1.1/bits/stl_tree.h \
  /usr/include/c++/16.1.1/bits/stl_set.h \
  /usr/include/c++/16.1.1/bits/stl_multiset.h \
+ /usr/include/c++/16.1.1/filesystem /usr/include/c++/16.1.1/bits/fs_fwd.h \
+ /usr/include/c++/16.1.1/cstdint /usr/include/c++/16.1.1/bits/chrono.h \
+ /usr/include/c++/16.1.1/ratio /usr/include/c++/16.1.1/limits \
+ /usr/include/c++/16.1.1/ctime \
+ /usr/include/c++/16.1.1/bits/parse_numbers.h \
+ /usr/include/c++/16.1.1/bits/fs_path.h /usr/include/c++/16.1.1/locale \
+ /usr/include/c++/16.1.1/bits/locale_facets_nonio.h \
+ /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/time_members.h \
+ /usr/include/c++/16.1.1/x86_64-pc-linux-gnu/bits/messages_members.h \
+ /usr/include/libintl.h \
+ /usr/include/c++/16.1.1/bits/locale_facets_nonio.tcc \
+ /usr/include/c++/16.1.1/bits/locale_conv.h \
+ /usr/include/c++/16.1.1/iomanip \
+ /usr/include/c++/16.1.1/bits/quoted_string.h \
+ /usr/include/c++/16.1.1/codecvt /usr/include/c++/16.1.1/bits/fs_dir.h \
+ /usr/include/c++/16.1.1/bits/fs_ops.h \
  /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/hnswlib/hnswlib/hnswlib.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/x86intrin.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/x86gprintrin.h \
@@ -318,11 +334,7 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o: \
  /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/hnswlib/hnswlib/stop_condition.h \
  /usr/include/assert.h \
  /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/hnswlib/hnswlib/bruteforce.h \
- /usr/include/c++/16.1.1/mutex /usr/include/c++/16.1.1/bits/chrono.h \
- /usr/include/c++/16.1.1/ratio /usr/include/c++/16.1.1/cstdint \
- /usr/include/c++/16.1.1/limits /usr/include/c++/16.1.1/ctime \
- /usr/include/c++/16.1.1/bits/parse_numbers.h \
- /usr/include/c++/16.1.1/bits/std_mutex.h \
+ /usr/include/c++/16.1.1/mutex /usr/include/c++/16.1.1/bits/std_mutex.h \
  /usr/include/c++/16.1.1/bits/unique_lock.h \
  /usr/include/c++/16.1.1/algorithm \
  /usr/include/c++/16.1.1/bits/stl_algo.h \
@@ -359,4 +371,146 @@ CMakeFiles/fastgraphrag.dir/src/main.cpp.o: \
  /usr/include/c++/16.1.1/unordered_set \
  /usr/include/c++/16.1.1/bits/unordered_set.h \
  /usr/include/c++/16.1.1/list /usr/include/c++/16.1.1/bits/stl_list.h \
- /usr/include/c++/16.1.1/bits/list.tcc
+ /usr/include/c++/16.1.1/bits/list.tcc \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/cpp-httplib/httplib.h \
+ /usr/include/arpa/inet.h /usr/include/netinet/in.h \
+ /usr/include/sys/socket.h /usr/include/bits/types/struct_iovec.h \
+ /usr/include/bits/socket.h /usr/include/bits/socket_type.h \
+ /usr/include/bits/sockaddr.h /usr/include/asm/socket.h \
+ /usr/include/asm-generic/socket.h /usr/include/asm/sockios.h \
+ /usr/include/asm-generic/sockios.h \
+ /usr/include/bits/types/struct_osockaddr.h /usr/include/bits/in.h \
+ /usr/include/ifaddrs.h /usr/include/net/if.h /usr/include/netdb.h \
+ /usr/include/rpc/netdb.h /usr/include/bits/types/sigevent_t.h \
+ /usr/include/bits/types/__sigval_t.h /usr/include/bits/netdb.h \
+ /usr/include/resolv.h /usr/include/sys/param.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/limits.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/16.1.1/include/syslimits.h \
+ /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+ /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+ /usr/include/bits/posix2_lim.h /usr/include/bits/xopen_lim.h \
+ /usr/include/bits/uio_lim.h /usr/include/signal.h \
+ /usr/include/bits/signum-generic.h /usr/include/bits/signum-arch.h \
+ /usr/include/bits/types/sig_atomic_t.h \
+ /usr/include/bits/types/siginfo_t.h /usr/include/bits/siginfo-arch.h \
+ /usr/include/bits/siginfo-consts.h \
+ /usr/include/bits/siginfo-consts-arch.h \
+ /usr/include/bits/types/sigval_t.h /usr/include/bits/sigevent-consts.h \
+ /usr/include/bits/sigaction.h /usr/include/bits/sigcontext.h \
+ /usr/include/bits/types/stack_t.h /usr/include/sys/ucontext.h \
+ /usr/include/bits/sigstack.h /usr/include/bits/sigstksz.h \
+ /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+ /usr/include/bits/environments.h /usr/include/bits/confname.h \
+ /usr/include/bits/getopt_posix.h /usr/include/bits/getopt_core.h \
+ /usr/include/bits/unistd_ext.h /usr/include/linux/close_range.h \
+ /usr/include/bits/ss_flags.h /usr/include/bits/types/struct_sigstack.h \
+ /usr/include/bits/sigthread.h /usr/include/bits/signal_ext.h \
+ /usr/include/bits/param.h /usr/include/linux/param.h \
+ /usr/include/asm/param.h /usr/include/asm-generic/param.h \
+ /usr/include/arpa/nameser.h /usr/include/arpa/nameser_compat.h \
+ /usr/include/bits/types/res_state.h /usr/include/c++/16.1.1/csignal \
+ /usr/include/netinet/tcp.h /usr/include/poll.h /usr/include/sys/poll.h \
+ /usr/include/bits/poll.h /usr/include/sys/mman.h \
+ /usr/include/bits/mman.h /usr/include/bits/mman-map-flags-generic.h \
+ /usr/include/bits/mman-linux.h /usr/include/bits/mman-shared.h \
+ /usr/include/bits/mman_ext.h /usr/include/sys/un.h \
+ /usr/include/c++/16.1.1/array /usr/include/c++/16.1.1/compare \
+ /usr/include/c++/16.1.1/cassert /usr/include/c++/16.1.1/chrono \
+ /usr/include/c++/16.1.1/climits \
+ /usr/include/c++/16.1.1/condition_variable \
+ /usr/include/c++/16.1.1/cstring /usr/include/fcntl.h \
+ /usr/include/bits/fcntl.h /usr/include/bits/fcntl-linux.h \
+ /usr/include/bits/cloexec.h /usr/include/linux/falloc.h \
+ /usr/include/linux/openat2.h /usr/include/bits/openat2.h \
+ /usr/include/bits/stat.h /usr/include/bits/struct_stat.h \
+ /usr/include/c++/16.1.1/functional \
+ /usr/include/c++/16.1.1/bits/std_function.h /usr/include/c++/16.1.1/map \
+ /usr/include/c++/16.1.1/bits/stl_map.h \
+ /usr/include/c++/16.1.1/bits/stl_multimap.h \
+ /usr/include/c++/16.1.1/regex /usr/include/c++/16.1.1/bitset \
+ /usr/include/c++/16.1.1/stack /usr/include/c++/16.1.1/bits/stl_stack.h \
+ /usr/include/c++/16.1.1/bits/regex_constants.h \
+ /usr/include/c++/16.1.1/bits/regex_error.h \
+ /usr/include/c++/16.1.1/bits/regex_automaton.h \
+ /usr/include/c++/16.1.1/bits/regex_automaton.tcc \
+ /usr/include/c++/16.1.1/bits/regex_scanner.h \
+ /usr/include/c++/16.1.1/bits/regex_scanner.tcc \
+ /usr/include/c++/16.1.1/bits/regex_compiler.h \
+ /usr/include/c++/16.1.1/bits/regex_compiler.tcc \
+ /usr/include/c++/16.1.1/bits/regex.h \
+ /usr/include/c++/16.1.1/bits/regex.tcc \
+ /usr/include/c++/16.1.1/bits/regex_executor.h \
+ /usr/include/c++/16.1.1/bits/regex_executor.tcc /usr/include/sys/stat.h \
+ /usr/include/bits/statx.h /usr/include/linux/stat.h \
+ /usr/include/bits/statx-generic.h \
+ /usr/include/bits/types/struct_statx_timestamp.h \
+ /usr/include/bits/types/struct_statx.h /usr/include/c++/16.1.1/thread \
+ /usr/include/c++/16.1.1/bits/std_thread.h \
+ /usr/include/c++/16.1.1/bits/this_thread_sleep.h \
+ /usr/include/c++/16.1.1/utility \
+ /usr/include/c++/16.1.1/bits/stl_relops.h \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/json.hpp \
+ /usr/include/c++/16.1.1/iterator \
+ /usr/include/c++/16.1.1/bits/stream_iterator.h \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/adl_serializer.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/abi_macros.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/conversions/from_json.hpp \
+ /usr/include/c++/16.1.1/forward_list \
+ /usr/include/c++/16.1.1/bits/forward_list.h \
+ /usr/include/c++/16.1.1/bits/forward_list.tcc \
+ /usr/include/c++/16.1.1/valarray \
+ /usr/include/c++/16.1.1/bits/valarray_array.h \
+ /usr/include/c++/16.1.1/bits/valarray_array.tcc \
+ /usr/include/c++/16.1.1/bits/valarray_before.h \
+ /usr/include/c++/16.1.1/bits/slice_array.h \
+ /usr/include/c++/16.1.1/bits/valarray_after.h \
+ /usr/include/c++/16.1.1/bits/gslice.h \
+ /usr/include/c++/16.1.1/bits/gslice_array.h \
+ /usr/include/c++/16.1.1/bits/mask_array.h \
+ /usr/include/c++/16.1.1/bits/indirect_array.h \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/exceptions.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/value_t.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/macro_scope.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/meta/detected.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/meta/void_t.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/thirdparty/hedley/hedley.hpp \
+ /usr/include/c++/16.1.1/version \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/string_escape.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/input/position_t.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/meta/cpp_future.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/meta/type_traits.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/iterators/iterator_traits.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/meta/call_std/begin.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/meta/call_std/end.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/json_fwd.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/string_concat.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/meta/identity_tag.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/meta/std_fs.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/meta/logic.hpp \
+ /usr/include/c++/16.1.1/optional \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/conversions/to_json.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/iterators/iteration_proxy.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/string_utils.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/byte_container_with_subtype.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/hash.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/input/binary_reader.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/input/input_adapters.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/input/json_sax.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/input/lexer.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/meta/is_sax.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/input/parser.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/iterators/internal_iterator.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/iterators/primitive_iterator.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/iterators/iter_impl.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/iterators/json_reverse_iterator.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/json_custom_base_class.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/json_pointer.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/json_ref.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/output/binary_writer.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/output/output_adapters.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/output/serializer.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/conversions/to_chars.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/ordered_map.hpp \
+ /usr/include/c++/16.1.1/any \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/detail/macro_unscope.hpp \
+ /run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/json/include/nlohmann/thirdparty/hedley/hedley_undef.hpp
