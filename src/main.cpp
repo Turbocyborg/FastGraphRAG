@@ -7,6 +7,7 @@
 #include <vector>
 #include <unordered_map>
 #include <set>
+#include <hnswlib/hnswlib.h> //include vectorDB
 
 using namespace std;
 //declare c++ parser function that we are linking from our submodule.
@@ -17,6 +18,7 @@ extern "C" TSLanguage *tree_sitter_cpp();
 //Graph Data Structure
 //======
 struct FunctionNode {
+    size_t id; //unique ID for vectorDB
     std::string name;
     std::string body;
     set<std::string>calls_to;//edges! which functions does this one call
@@ -25,6 +27,8 @@ struct FunctionNode {
 // the actual knowledge graph(adjacency list)
 // maps function name to its node data
 unordered_map<std::string,FunctionNode>knowledge_graph;
+//to look up a function by its vector DB ID
+unordered_map<size_t,string>id_to_name;
 
 //read file from hard drive
 string read_file(const string& filepath){
@@ -38,6 +42,20 @@ string read_file(const string& filepath){
     return buffer.str();
 
 }
+
+//=====
+// MOCK AI EMBEDDING FUNCTION
+//=====
+// in a real app, an LLM gives us a vector of 1536 floats
+// for now,lets generate a fake 16-dimensional vector based on the string length and char
+vector<float>mock_embed(const string& text){
+    vector<float>vec(16,0.0f);
+    for(size_t i=0;i<text.length();i++){
+        vec[i%16]+=(float)text[i]*0.1f;
+    }
+    return vec;
+}
+
 
 struct ParserDeleter{
     void operator()(TSParser* p)const{
@@ -72,7 +90,7 @@ using CStringPtr = unique_ptr<char,decltype(&free)>;
 
 
 int main(){
-    cout<<"Starting fastgraphrag Builder..."<<endl;
+    cout<<"Starting fastgraphrag Engine..."<<endl;
 
     //1. create new parser instance
     ParserPtr parser(ts_parser_new());
@@ -137,7 +155,7 @@ int main(){
 
     //INNER QUERY:
     // find the function calls inside function body
-    string call_query_str="(call_expression function: (identifier) @called.func)";
+    string call_query_str="(call_expression function: (identifier) @called)";
     //compile query
     QueryPtr call_query(
         ts_query_new(
@@ -175,6 +193,9 @@ int main(){
     );
 
     TSQueryMatch match;
+    //unique ID counter
+    size_t curr_id=0;
+
     cout<<"=== RAG Chunks Extracted ===\n"<<endl;
 
     // 4. loop through all the matches found in code
@@ -182,6 +203,8 @@ int main(){
         // string curr_func_name="";
         // string curr_func_body="";
         FunctionNode node;
+        //assign ID and increment
+        node.id=curr_id++;
         TSNode body_node;
 
         //loop through the captures in this match
@@ -231,28 +254,88 @@ int main(){
 
         //add the completed node to our knowledge graph
         knowledge_graph[node.name]=node;
+        //save the mapping!
+        id_to_name[node.id]=node.name;
 
         // //print perfect "chunk" ready for a vector database
         // cout<<"[Function Name]: "<<curr_func_name<<endl;
         // cout<<"[Code Chunk]:\n"<<curr_func_body<<'\n'<<endl;
         // cout<<"-----------------------------------"<<endl;
     }
-    //=====
-    //Print the knowledge graph
-    //=====
-    cout<<"=== In-Memory Knowledge Graph ===\n";
-    for(const auto&pair : knowledge_graph){
-        cout<<"Node: ["<<pair.first<<"]\n";
 
-        if(pair.second.calls_to.empty()){
-            cout<<" Edges: None (Leaf node)\n";
-        }else{
-            for(const auto& edge: pair.second.calls_to){
-                cout<<" --[CALLS]--> Node: ["<<edge<<"]\n";
-            }
-        }
-        cout<<"------------------------------\n";
+    //=====
+    //VECTOR DATABASE(hnswlib)
+    cout<<"Building Vector Index...\n";
+
+    int dim=16;//size of our vectors
+    int mx_elements=10000;//max capacity of our database
+
+    //1. init the Math space(inner product is great for cosine similarity)
+    hnswlib::InnerProductSpace space(dim);
+    //2. init the HNSW index(the database)
+    //M=16(number of connections/element) ef_construction=200(search depth during build)
+    hnswlib::HierarchicalNSW<float>* vector_db=new hnswlib::HierarchicalNSW<float>(&space, mx_elements,16,200);
+
+    // 3.insert our functions into database
+    for(const auto&pair:knowledge_graph){
+        const FunctionNode& node =pair.second;
+
+        //generate Embedding
+        //generate the vector from function's code
+        vector<float> embedding = mock_embed(node.body);
+
+        //add it to the database(requires pointer to vector array, and id)
+        vector_db->addPoint(embedding.data(),node.id);
+        cout<<"Inserted ["<<node.name<<"] into Vector DB with ID: "<<node.id<<'\n';
+
     }
+
+    //=====
+    //Searching the Database
+    //=====
+    cout<<"\n=== AI Semantic Search Test ===\n";
+    string user_ques="How do I calculate and print something?";
+    cout<<"User Question: "<<user_ques<<'\n';
+
+    //1.convert the user's question into a vector
+    vector<float>query_vector=mock_embed(user_ques);
+
+    //2.search for the Top 1 closest match(k=1)
+    auto res=vector_db->searchKnn(query_vector.data(),1);
+
+    if(!res.empty()){
+        size_t best_match_id=res.top().second;
+        string best_match_name=id_to_name[best_match_id];
+
+        cout<<"-> Nearest Code Chunk Found: "<<best_match_name<<'\n';
+
+        //lets use our graph to get extra content
+        cout<<"-> Graph Context: This function also calls: ";
+        for(const auto& edge:knowledge_graph[best_match_name].calls_to){
+            cout<<edge<<" ";
+        }
+        cout<<'\n';
+    }
+
+    //clean up memory
+    delete vector_db;
+
+    // //=====
+    // //Print the knowledge graph
+    // //=====
+    // cout<<"=== In-Memory Knowledge Graph ===\n";
+    // for(const auto&pair : knowledge_graph){
+    //     cout<<"Node: ["<<pair.first<<"]\n";
+
+    //     if(pair.second.calls_to.empty()){
+    //         cout<<" Edges: None (Leaf node)\n";
+    //     }else{
+    //         for(const auto& edge: pair.second.calls_to){
+    //             cout<<" --[CALLS]--> Node: ["<<edge<<"]\n";
+    //         }
+    //     }
+    //     cout<<"------------------------------\n";
+    // }
 
     // //6. convert the tree to readable string format(S-expression)
     // CStringPtr tree_string(

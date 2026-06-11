@@ -5,7 +5,6 @@ project(FastGraphRAG VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# find the Tree-sitter core library
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(TREE_SITTER REQUIRED tree-sitter)
 
@@ -16,6 +15,9 @@ add_library(tree-sitter-cpp STATIC
     external/tree-sitter-cpp/src/scanner.c
 )
 target_include_directories(tree-sitter-cpp PRIVATE external/tree-sitter-cpp/src)
+
+#so c++ can find hnswlib headers
+include_directories(external/hnswlib)
 
 # main executable
 add_executable(fastgraphrag src/main.cpp)

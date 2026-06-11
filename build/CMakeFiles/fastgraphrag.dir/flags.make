@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = 
+CXX_INCLUDES = -I/run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/hnswlib
 
 CXX_FLAGS = -std=gnu++17
 

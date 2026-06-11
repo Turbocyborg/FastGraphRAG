@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = 
 
-C_INCLUDES = -I/run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/tree-sitter-cpp/src
+C_INCLUDES = -I/run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/tree-sitter-cpp/src -I/run/media/turbocyborg/Volume/Best/Coding/Cpp/fastgraphrag/external/hnswlib
 
 C_FLAGS = 
 
