@@ -16,8 +16,11 @@ add_library(tree-sitter-cpp STATIC
 )
 target_include_directories(tree-sitter-cpp PRIVATE external/tree-sitter-cpp/src)
 
-#so c++ can find hnswlib headers
+#----so c++ can find hnswlib headers as well as httplib and json
 include_directories(external/hnswlib)
+include_directories(external/cpp-httplib)
+include_directories(external/json/include)
+#----
 
 # main executable
 add_executable(fastgraphrag src/main.cpp)

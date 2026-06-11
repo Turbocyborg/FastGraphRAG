@@ -7,9 +7,18 @@
 #include <vector>
 #include <unordered_map>
 #include <set>
+#include <filesystem>//scanning folders
+
 #include <hnswlib/hnswlib.h> //include vectorDB
+//http and json
+#include <httplib.h>
+#include <nlohmann/json.hpp>
 
 using namespace std;
+
+namespace fs = filesystem;
+using json = nlohmann::json;
+
 //declare c++ parser function that we are linking from our submodule.
 //extern 'C' tells the C++ compiler not to mangle the C function name.
 extern "C" TSLanguage *tree_sitter_cpp();
@@ -22,6 +31,7 @@ struct FunctionNode {
     std::string name;
     std::string body;
     set<std::string>calls_to;//edges! which functions does this one call
+    string filepath;
 };
 
 // the actual knowledge graph(adjacency list)
@@ -43,17 +53,53 @@ string read_file(const string& filepath){
 
 }
 
-//=====
-// MOCK AI EMBEDDING FUNCTION
-//=====
-// in a real app, an LLM gives us a vector of 1536 floats
-// for now,lets generate a fake 16-dimensional vector based on the string length and char
-vector<float>mock_embed(const string& text){
-    vector<float>vec(16,0.0f);
-    for(size_t i=0;i<text.length();i++){
-        vec[i%16]+=(float)text[i]*0.1f;
+vector<string>get_cpp_files(const string& dir_path){
+    vector<string> files;
+    for(const auto& entry: fs::recursive_directory_iterator(dir_path)){
+        if(entry.is_regular_file()){
+            string ext=entry.path().extension().string();
+            //look for c++
+            if(ext==".cpp" || ext==".h" || ext==",hpp" || ext==".c"){
+                files.push_back(entry.path().string());
+            }
+        }
     }
-    return vec;
+    return files;
+}
+
+// //=====
+// // MOCK AI EMBEDDING FUNCTION
+// //=====
+// // in a real app, an LLM gives us a vector of 1536 floats
+// // for now,lets generate a fake 16-dimensional vector based on the string length and char
+// vector<float>mock_embed(const string& text){
+//     vector<float>vec(16,0.0f);
+//     for(size_t i=0;i<text.length();i++){
+//         vec[i%16]+=(float)text[i]*0.1f;
+//     }
+//     return vec;
+// }
+
+//=====
+// REAL AI EMBEDDING(Ollama REST API)
+//=====
+vector<float> generate_embedding(const string& text){
+    httplib::Client cli("localhost",11434);//connect to local Ollama
+
+    //create JSON payload for embedding API
+    json payload={
+        {"model", "nomic-embed-text"},
+        {"prompt", text}
+    };
+
+    auto res = cli.Post("/api/embeddings", payload.dump(), "application/json");
+    if(res && res->status==200){
+        json response_json = json::parse(res->body);
+        return response_json["embedding"].get<vector<float>>();
+    }else{
+        cerr<<"Failed to connect to Ollama. Is it running?"<<endl;
+        exit(1);
+    }
 }
 
 
@@ -88,35 +134,64 @@ using QueryCursorPtr= unique_ptr<TSQueryCursor,QueryCursorDeleter>;
 
 using CStringPtr = unique_ptr<char,decltype(&free)>;
 
+//=====
+//REAL LLM  GENERATION (Ollama REST API)
+//=====
 
-int main(){
-    cout<<"Starting fastgraphrag Engine..."<<endl;
+void ask_llm(const string& que, const string& code_chunk, const string& graph_context){
+    httplib::Client cli("localhost", 11434);//connect to local Ollama
+
+    //BUilding prompt(injecting our RAG context)
+    string prompt="You are an expert Senior C++ Engineer Helping a junior developer understand a codebase.\n\n";
+    prompt+= "CONTEXT (Code):\n"+code_chunk+"\n\n";
+    prompt+="CONTEXT (Graph Dependencies):\n"+graph_context+"\n\n";
+    prompt+="USER QUESTION:\n"+que+"\n\n";
+    prompt+="ANSWER CONCISELY AND CLEARLY:";
+
+    json payload={
+        {"model","qwen2.5-coder"},
+        {"prompt",prompt},
+        {"stream",false}
+    };
+
+    cout<<"\n[Thinking... Let the AI cook!]\n"<<endl;
+
+    auto res=cli.Post("/api/generate",payload.dump(),"application/json");
+    if(res && res->status==200){
+        json response_json=json::parse(res->body);
+        cout<<"================ AI ANSWER ================\n";
+        cout<<response_json["response"].get<string>()<<'\n';
+        cout<<"============================================\n";
+    }
+}
+
+int main(int argc, char* argv[]){
+    // check if user provided the right arg
+    if(argc<3){
+        cerr<<"Usage: "<<argv[0]<<" <path_to_directory> \"<your_question>\"\n";
+        cerr<<"Example: "<<argv[0]<<" ../test_repo \"How does calculate_and_print word?\"\n";
+        return 1;
+    }
+
+    string repo_path=argv[1];
+    string user_ques=argv[2];
+
+    cout<<"Starting fastgraphrag AI Engine...\n";
+    cout<<"Target Directory: "<<repo_path<<'\n';
+
+    //find all c++ files
+    vector<string>target_files=get_cpp_files(repo_path);
+    if(target_files.empty()){
+        cerr<<"No C++ files found in "<<repo_path<<'\n';
+        return 1;
+    }
+    cout<<"Found "<<target_files.size()<<" C++ files to analyze.\n";
 
     //1. create new parser instance
     ParserPtr parser(ts_parser_new());
 
     //2. tell the parser to use c++ grammar rules
     ts_parser_set_language(parser.get(), tree_sitter_cpp());
-
-    //3. actual file from test repo
-    string filepath="../test_repo/math_ops.cpp";
-    string src_code=read_file(filepath);
-    cout<<"Successfully loaded: "<< filepath << " ("<< src_code.length()<<"bytes)\n"<<endl;
-
-
-
-    //4. parse the string into an AST(Abstract Syntax Tree)
-    TreePtr tree(
-        ts_parser_parse_string(
-            parser.get(),
-            nullptr,
-            src_code.c_str(),
-            src_code.length()
-        )
-    );
-
-    // 5. get the root node of the tree(top of hierarchy)
-    TSNode root_node = ts_tree_root_node(tree.get());
 
     //=====
     //Extracting data using queries
@@ -186,88 +261,110 @@ int main(){
         ts_query_cursor_new()
     );
 
-    ts_query_cursor_exec(
-        query_cursor.get(),
-        query.get(),
-        root_node
-    );
-
-    TSQueryMatch match;
     //unique ID counter
     size_t curr_id=0;
 
-    cout<<"=== RAG Chunks Extracted ===\n"<<endl;
+    cout<<"Parsing Source Code & Generating Embeddings...\n"<<endl;
 
-    // 4. loop through all the matches found in code
-    while(ts_query_cursor_next_match(query_cursor.get(), &match)){
-        // string curr_func_name="";
-        // string curr_func_body="";
-        FunctionNode node;
-        //assign ID and increment
-        node.id=curr_id++;
-        TSNode body_node;
+    for(const auto& filepath: target_files){
+        //3. actual file from test repo
+        string src_code=read_file(filepath);
+        if(src_code.empty())continue;
+        cout<<"Successfully loaded: "<< filepath << " ("<< src_code.length()<<"bytes)\n"<<endl;
 
-        //loop through the captures in this match
-        for(uint32_t i=0;i<match.capture_count;i++){
-            TSNode capture_node = match.captures[i].node;
+        //1. parse the string into an AST(Abstract Syntax Tree)
+        TreePtr tree(
+            ts_parser_parse_string(
+                parser.get(),
+                nullptr,
+                src_code.c_str(),
+                src_code.length()
+            )
+        );
 
-            //start and end byte positions of func_name
-            uint32_t start_byte=ts_node_start_byte(capture_node);
-            uint32_t end_byte=ts_node_end_byte(capture_node);
+        // 2. get the root node of the tree(top of hierarchy)
+        TSNode root_node = ts_tree_root_node(tree.get());
 
-            //extracted text
-            string extracted_txt=src_code.substr(start_byte,end_byte-start_byte);
+        ts_query_cursor_exec(
+            query_cursor.get(),
+            query.get(),
+            root_node
+        );
+        TSQueryMatch match;
 
-            //get the name of capture tag(e.g., "func.name" or "func.body")
-            uint32_t length;
-            const char *capture_name = ts_query_capture_name_for_id(query.get(), match.captures[i].index, &length);
+        // 4. loop through all the matches found in code
+        while(ts_query_cursor_next_match(query_cursor.get(), &match)){
+            // string curr_func_name="";
+            // string curr_func_body="";
+            FunctionNode node;
+            //assign ID and increment
+            node.id=curr_id++;
+            node.filepath=filepath;//tag it with its file
+            TSNode body_node;
 
-            string tag(capture_name, length);
+            //loop through the captures in this match
+            for(uint32_t i=0;i<match.capture_count;i++){
+                TSNode capture_node = match.captures[i].node;
 
-            if(tag=="func.name")node.name=extracted_txt;
-            if(tag=="func.body"){
-                node.body=extracted_txt;
-                body_node=capture_node; // save the AST node of body so we can search inside it
+                //start and end byte positions of func_name
+                uint32_t start_byte=ts_node_start_byte(capture_node);
+                uint32_t end_byte=ts_node_end_byte(capture_node);
+
+                //extracted text
+                string extracted_txt=src_code.substr(start_byte,end_byte-start_byte);
+
+                //get the name of capture tag(e.g., "func.name" or "func.body")
+                uint32_t length;
+                const char *capture_name = ts_query_capture_name_for_id(query.get(), match.captures[i].index, &length);
+
+                string tag(capture_name, length);
+
+                if(tag=="func.name")node.name=extracted_txt;
+                if(tag=="func.body"){
+                    node.body=extracted_txt;
+                    body_node=capture_node; // save the AST node of body so we can search inside it
+                }
+
+            }
+            //=====
+            // Graph Building: Find outgoing edges
+            //=====
+            //Execute the inner query Only inside the current function's body
+            ts_query_cursor_exec(
+                call_cursor.get(),
+                call_query.get(),
+                body_node
+            );
+            TSQueryMatch call_match;
+
+            while(ts_query_cursor_next_match(call_cursor.get(), & call_match)){
+                TSNode call_node= call_match.captures[0].node;
+                uint32_t start = ts_node_start_byte(call_node);
+                uint32_t end = ts_node_end_byte(call_node);
+                string called_func_name= src_code.substr(start,end-start);
+
+                //add edge to our node
+                node.calls_to.insert(called_func_name);
             }
 
+            //add the completed node to our knowledge graph
+            knowledge_graph[node.name]=node;
+            //save the mapping!
+            id_to_name[node.id]=node.name;
+
+            // //print perfect "chunk" ready for a vector database
+            // cout<<"[Function Name]: "<<curr_func_name<<endl;
+            // cout<<"[Code Chunk]:\n"<<curr_func_body<<'\n'<<endl;
+            // cout<<"-----------------------------------"<<endl;
         }
-        //=====
-        // Graph Building: Find outgoing edges
-        //=====
-        //Execute the inner query Only inside the current function's body
-        ts_query_cursor_exec(
-            call_cursor.get(),
-            call_query.get(),
-            body_node
-        );
-        TSQueryMatch call_match;
-
-        while(ts_query_cursor_next_match(call_cursor.get(), & call_match)){
-            TSNode call_node= call_match.captures[0].node;
-            uint32_t start = ts_node_start_byte(call_node);
-            uint32_t end = ts_node_end_byte(call_node);
-            string called_func_name= src_code.substr(start,end-start);
-
-            //add edge to our node
-            node.calls_to.insert(called_func_name);
-        }
-
-        //add the completed node to our knowledge graph
-        knowledge_graph[node.name]=node;
-        //save the mapping!
-        id_to_name[node.id]=node.name;
-
-        // //print perfect "chunk" ready for a vector database
-        // cout<<"[Function Name]: "<<curr_func_name<<endl;
-        // cout<<"[Code Chunk]:\n"<<curr_func_body<<'\n'<<endl;
-        // cout<<"-----------------------------------"<<endl;
     }
 
-    //=====
-    //VECTOR DATABASE(hnswlib)
-    cout<<"Building Vector Index...\n";
 
-    int dim=16;//size of our vectors
+    //=====
+    //VECTOR DATABASE( 768 DIMENSIONS hnswlib)
+    cout<<"Building Vector DB. Inserting "<<knowledge_graph.size()<<" functions...\n";
+
+    int dim=768;//size of our vectors since nomic-embed-text outputs 768 dimensions
     int mx_elements=10000;//max capacity of our database
 
     //1. init the Math space(inner product is great for cosine similarity)
@@ -282,39 +379,44 @@ int main(){
 
         //generate Embedding
         //generate the vector from function's code
-        vector<float> embedding = mock_embed(node.body);
+        vector<float> embedding = generate_embedding(node.body);
 
         //add it to the database(requires pointer to vector array, and id)
         vector_db->addPoint(embedding.data(),node.id);
-        cout<<"Inserted ["<<node.name<<"] into Vector DB with ID: "<<node.id<<'\n';
+        cout<<"Inserted ["<<node.name<<"] into Vector DB.\n";
 
     }
 
-    //=====
-    //Searching the Database
-    //=====
-    cout<<"\n=== AI Semantic Search Test ===\n";
-    string user_ques="How do I calculate and print something?";
-    cout<<"User Question: "<<user_ques<<'\n';
+    //-----RAG SEARCH & LLM GENERATION----
+    cout<<"\nSearching for context related to: \n";
+    cout<<user_ques<<'\n';
 
-    //1.convert the user's question into a vector
-    vector<float>query_vector=mock_embed(user_ques);
-
-    //2.search for the Top 1 closest match(k=1)
+    //1.convert the user's question into a vector(embed user question)
+    vector<float>query_vector=generate_embedding(user_ques);
+    
+    //2. Search Database
     auto res=vector_db->searchKnn(query_vector.data(),1);
 
     if(!res.empty()){
         size_t best_match_id=res.top().second;
         string best_match_name=id_to_name[best_match_id];
 
-        cout<<"-> Nearest Code Chunk Found: "<<best_match_name<<'\n';
-
+        cout<<"-> Target Function Found: "<<best_match_name<<" (in "<<knowledge_graph[best_match_name].filepath<<")\n";
+        
         //lets use our graph to get extra content
-        cout<<"-> Graph Context: This function also calls: ";
+        //---deep context injection---
+        string deep_context="";
         for(const auto& edge:knowledge_graph[best_match_name].calls_to){
-            cout<<edge<<" ";
+            //does this connected function exist in our knowledge graph?
+            if(knowledge_graph.find(edge)!=knowledge_graph.end()){
+                deep_context+="--- Code for " + edge + "() ---\n";
+                deep_context+= knowledge_graph[edge].body + "\n\n";
+            }else{
+                deep_context+= "--- " + edge + "() (External/Library Function) ---\n";
+            }
         }
-        cout<<'\n';
+        //3. send to llm
+        ask_llm(user_ques,knowledge_graph[best_match_name].body,deep_context);
     }
 
     //clean up memory
