@@ -57,10 +57,16 @@ vector<string>get_cpp_files(const string& dir_path){
     vector<string> files;
     for(const auto& entry: fs::recursive_directory_iterator(dir_path)){
         if(entry.is_regular_file()){
+            string path_str=entry.path().string(); //full path
             string ext=entry.path().extension().string();
+
+            //skip build and external library folders
+            if(path_str.find("external")!=string::npos || path_str.find("build")!=string::npos){
+                continue;
+            }
             //look for c++
-            if(ext==".cpp" || ext==".h" || ext==",hpp" || ext==".c"){
-                files.push_back(entry.path().string());
+            if(ext==".cpp" || ext==".h" || ext==".hpp" || ext==".c"){
+                files.push_back(path_str);
             }
         }
     }
@@ -93,12 +99,18 @@ vector<float> generate_embedding(const string& text){
     };
 
     auto res = cli.Post("/api/embeddings", payload.dump(), "application/json");
-    if(res && res->status==200){
-        json response_json = json::parse(res->body);
-        return response_json["embedding"].get<vector<float>>();
+    if(res){
+        if(res->status==200){
+            json response_json = json::parse(res->body);
+            return response_json["embedding"].get<vector<float>>();
+        }else{
+            //log the error
+            cerr<<" ->[Warning] Ollama rejected a chunk (Status: "<< res->status << "). Text Length:"<<text.length()<<" chars.\n";
+            return {}; //empty vector
+        }
     }else{
-        cerr<<"Failed to connect to Ollama. Is it running?"<<endl;
-        exit(1);
+        cerr<<"Failed to connect to Ollama. Is it running?"<< httplib::to_string(res.error())<<endl;
+        return {};
     }
 }
 
@@ -162,6 +174,8 @@ void ask_llm(const string& que, const string& code_chunk, const string& graph_co
         cout<<"================ AI ANSWER ================\n";
         cout<<response_json["response"].get<string>()<<'\n';
         cout<<"============================================\n";
+    }else{
+        cout<< httplib::to_string(res.error())<<'\n';
     }
 }
 
@@ -381,6 +395,11 @@ int main(int argc, char* argv[]){
         //generate the vector from function's code
         vector<float> embedding = generate_embedding(node.body);
 
+        //check if embedding failed(e.g. chunk was too large)
+        if(embedding.empty() || embedding.size()!=dim){
+            cout<< "Skipped ["<<node.name<<"] due to embedding failure.\n";
+            continue;
+        }
         //add it to the database(requires pointer to vector array, and id)
         vector_db->addPoint(embedding.data(),node.id);
         cout<<"Inserted ["<<node.name<<"] into Vector DB.\n";
