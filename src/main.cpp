@@ -109,7 +109,7 @@ vector<float> generate_embedding(const string& text){
             return {}; //empty vector
         }
     }else{
-        cerr<<"Failed to connect to Ollama. Is it running?"<< httplib::to_string(res.error())<<endl;
+        cerr<<"Failed to connect to Ollama. Is it running? "<< httplib::to_string(res.error())<<endl;
         return {};
     }
 }
@@ -388,22 +388,45 @@ int main(int argc, char* argv[]){
     hnswlib::HierarchicalNSW<float>* vector_db=new hnswlib::HierarchicalNSW<float>(&space, mx_elements,16,200);
 
     // 3.insert our functions into database
+    size_t mx_chars=4000; //limit for embeddings
+
     for(const auto&pair:knowledge_graph){
         const FunctionNode& node =pair.second;
 
-        //generate Embedding
-        //generate the vector from function's code
-        vector<float> embedding = generate_embedding(node.body);
+        if(node.body.length() <= mx_chars){
+            //generate Embedding
+            //generate the vector from function's code
+            vector<float> embedding = generate_embedding(node.body);
 
-        //check if embedding failed(e.g. chunk was too large)
-        if(embedding.empty() || embedding.size()!=dim){
-            cout<< "Skipped ["<<node.name<<"] due to embedding failure.\n";
-            continue;
+            //check if embedding failed(e.g. chunk was too large)
+            if(embedding.empty() || embedding.size()!=dim){
+                cout<< "Skipped ["<<node.name<<"] due to embedding failure.\n";
+                continue;
+            }
+            //add it to the database(requires pointer to vector array, and id)
+            vector_db->addPoint(embedding.data(),node.id);
+            cout<<"Inserted ["<<node.name<<"] into Vector DB.\n";
         }
-        //add it to the database(requires pointer to vector array, and id)
-        vector_db->addPoint(embedding.data(),node.id);
-        cout<<"Inserted ["<<node.name<<"] into Vector DB.\n";
+        //if function is Massive, split it into chunks
+        else{
+            cout<<"Splitting massive function ["<< node.name<<"] into sub-chunks...\n";
 
+            for(size_t i=0;i<node.body.length(); i+=mx_chars){
+                //slice a sub-chunk and make sure we don't go out of bounds
+                string sub_chunk=node.body.substr(i,min(mx_chars, node.body.length()-i));
+
+                //add context so th AI knows this is just a pirce of larger function
+                string chunk_text="Part of function "+ node.name + ":\n" + sub_chunk;
+
+                vector<float>embedding=generate_embedding(chunk_text);
+
+                if(!embedding.empty() && embedding.size()==dim){
+                    //we insert this sub-chunk, but still point it to original node.id
+                    vector_db->addPoint(embedding.data(), node.id);
+                }
+            }
+            cout<<"Insert ["<<node.name << "] (Sub-chunked) into Vector DB.\n";
+        }
     }
 
     //-----RAG SEARCH & LLM GENERATION----
